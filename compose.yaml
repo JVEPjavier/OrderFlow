@@ -4,7 +4,7 @@ services:
     environment:
       POSTGRES_DB: orderflow
       POSTGRES_USER: orderflow
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-orderflow_dev_only}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env or the environment}
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U orderflow -d orderflow"]
       interval: 5s
@@ -15,11 +15,18 @@ services:
   app:
     build: .
     environment:
+      SPRING_PROFILES_ACTIVE: docker
       SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/orderflow
       SPRING_DATASOURCE_USERNAME: orderflow
-      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD:-orderflow_dev_only}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env or the environment}
     ports:
-      - "8080:8080"
+      - "${APP_PORT:-8080}:8080"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://localhost:8080/actuator/health | grep -q UP"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
     depends_on:
       db:
         condition: service_healthy

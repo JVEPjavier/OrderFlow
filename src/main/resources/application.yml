@@ -15,3 +15,13 @@ management:
     health:
       probes:
         enabled: true
+info:
+  app:
+    name: OrderFlow
+    description: API B2B de órdenes e inventario
+    version: 0.0.1-SNAPSHOT
+springdoc:
+  swagger-ui:
+    path: /swagger-ui
+  api-docs:
+    path: /v3/api-docs

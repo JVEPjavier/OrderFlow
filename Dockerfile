@@ -3,11 +3,11 @@ WORKDIR /workspace
 COPY pom.xml .
 RUN mvn -B -q dependency:go-offline
 COPY src src
-RUN mvn -B -q package -DskipTests
+RUN mvn -B -q package
 
 FROM eclipse-temurin:21-jre
 WORKDIR /app
-RUN addgroup --system spring && adduser --system --ingroup spring spring
+RUN apt-get update && apt-get install -y --no-install-recommends curl && rm -rf /var/lib/apt/lists/* && addgroup --system spring && adduser --system --ingroup spring spring
 COPY --from=build /workspace/target/orderflow-*.jar app.jar
 USER spring
 EXPOSE 8080
