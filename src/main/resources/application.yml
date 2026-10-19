@@ -1,0 +1,17 @@
+spring:
+  application:
+    name: orderflow
+  jpa:
+    hibernate:
+      ddl-auto: validate
+  flyway:
+    enabled: true
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      probes:
+        enabled: true
